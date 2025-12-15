@@ -33,7 +33,7 @@ body {
   }
 }
 .fade-out {
-  animation: fadeOut 800ms ease-out forwards;
+  animation: fadeOut 800ms ease-in-out forwards;
 }
 
 @keyframes slideOutRight {
@@ -47,7 +47,7 @@ body {
   }
 }
 .slide-out-right {
-  animation: slideOutRight 800ms ease-out forwards;
+  animation: slideOutRight 800ms ease-in-out forwards;
 }
 
 @keyframes slideInFromRight {
@@ -61,7 +61,7 @@ body {
   }
 }
 .slide-in-right {
-  animation: slideInFromRight 800ms ease-out forwards;
+  animation: slideInFromRight 800ms ease-in-out forwards;
 }
 @keyframes fadeInSlow {
   from {
@@ -73,7 +73,7 @@ body {
 }
 
 .fade-in-slow {
-  animation: fadeInSlow 800ms ease-out forwards;
+  animation: fadeInSlow 800ms ease-in-out forwards;
 }
 .input {
   width: 100%;
@@ -136,3 +136,5 @@ html, body {
   width: 0;
   height: 0;
 }
+/* 🔥 Kill Chrome autofill blue background */
+/* REMOVE autofill paint layer completely */

@@ -11,6 +11,10 @@ import Link from "next/link";
 import { toast } from "sonner";
 import Signupheader from "@/app/auth/signupheader"
 import { ChevronLeft } from "lucide-react";
+import { sendOtp } from "@/app/lib/auth.api";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 const forgotSchema = z.object({
   email: z.string().email("Invalid email"),
 });
@@ -28,10 +32,39 @@ export default function ForgotPasswordPage() {
   } = useForm<ForgotFormData>({
     resolver: zodResolver(forgotSchema),
   });
+const [loading, setLoading] = useState(false);
+const router = useRouter();
 
   const onSubmit = async (data: ForgotFormData) => {
-    toast.success("Reset email sent successfully!");
-  };
+  if (loading) return;
+
+  try {
+    setLoading(true);
+
+    // 1️⃣ Send OTP for RESET PASSWORD
+    await sendOtp({
+      email: data.email,
+      purpose: "login",
+    });
+
+    // 2️⃣ Store securely for verify-otp page
+    sessionStorage.setItem("otp_email", data.email);
+    sessionStorage.setItem("otp_purpose", "login");
+
+    toast.success("OTP sent to your email");
+
+    // 3️⃣ Redirect to OTP verification
+    router.push("/auth/verifyotp");
+
+  } catch (err: any) {
+    toast.error(
+      err?.response?.data?.message || "Failed to send OTP"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="w-full min-h-screen flex bg-white text-black">
@@ -98,9 +131,14 @@ export default function ForgotPasswordPage() {
             moveCursorToClickPosition={moveCursorToClickPosition}
           />
 
-          <Button className="w-full h-[50px] bg-[#018FFF] text-white font-[Poppins] text-[16px] rounded-md">
-            Verify Email
-          </Button>
+          <Button
+  type="submit"
+  disabled={loading}
+  className="w-full h-[50px] bg-[#018FFF] text-white font-[Poppins] text-[16px] rounded-md"
+>
+  {loading ? "Sending OTP..." : "Verify Email"}
+</Button>
+
 
         </form>
       </div>

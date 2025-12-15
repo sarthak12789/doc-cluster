@@ -12,6 +12,9 @@ import Button from "@/app/auth/button";
 import google from "@/app/assets/google.svg";
 import github from "@/app/assets/github.svg";
 import SignupHeader from "../signupheader";
+import { loginUser } from "@/app/lib/auth.api";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 // ✅ SIMPLE LOGIN SCHEMA
 const loginSchema = z.object({
@@ -40,18 +43,51 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginFormData) => {
-    try {
-      setLoading(true);
-      console.log("LOGIN DATA", data);
-      // ✅ API CALL HERE
-    } finally {
-      setLoading(false);
-    }
-  };
+ const router = useRouter();
+
+const onSubmit = async (data: LoginFormData) => {
+  if (loading) return;
+
+  try {
+    setLoading(true);
+
+    // 🔐 Login with email + password
+    const res = await loginUser({
+      emailOrPhoneOrUsername: data.email,
+      password: data.password,
+    });
+
+    const user = res.data.data;
+
+    toast.success("Logged in successfully");
+
+    /**
+     * 🚀 FUTURE READY (OTP LOGIN)
+     *
+     * When OTP login UI is ready:
+     *
+     * 1. await sendOtp({ email: user.email, purpose: "login" });
+     * 2. sessionStorage.setItem("otp_email", user.email);
+     * 3. sessionStorage.setItem("otp_purpose", "login");
+     * 4. router.push("/auth/verify-otp");
+     */
+
+    // ✅ For now → direct login success
+    router.replace("/dashboard");
+
+  } catch (err: any) {
+    toast.error(
+      err?.response?.data?.message || "Invalid email or password"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
-    <div className="w-[980px] flex flex-col text-black mx-auto min-h-screen ml-20 mr-30">
+    <div className="w-full sm:w-[55.49%] flex flex-col pt-25 sm:pt-0  text-black box-border px-5 sm:pl-12 md:pl-16 lg:px-20  sm:pr-12 md:pr-16 lg:pr-30  mx-auto">
       <SignupHeader/>
       {/* ✅ MAIN HEADING */}
       <h2

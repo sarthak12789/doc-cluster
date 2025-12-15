@@ -33,7 +33,7 @@ export default function LeftAuthSection() {
     const [prevIndex, setPrevIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [autoAnimate, setAutoAnimate] = useState(false);
-    const [action, setAction] = useState<"auto" | "left" | "right">("auto");
+    const [action, setAction] = useState<"auto" | "left" | "right" | "manual">("auto");
     const resumeTimer = useRef<NodeJS.Timeout | null>(null);
 
     // ✅ AUTO SLIDE
@@ -69,7 +69,7 @@ export default function LeftAuthSection() {
     const nextSlide = () => {
         setIsPaused(true);
         setAutoAnimate(true);
-        setAction("right");
+        setAction("manual");
         setPrevIndex(index);
         setIndex((prev) => (prev + 1) % slides.length);
         startAutoResumeTimer();
@@ -88,20 +88,20 @@ export default function LeftAuthSection() {
     };
 
     return (
-        <div className="w-[1028px] min-h-screen bg-[#062B4E] text-white flex flex-col items-center justify-start pt-[53px] px-0 relative">
+        <div className="hidden sm:flex px-2 md:px-1 sm:basis-[44.51%] min-h-screen bg-[#062B4E] text-white flex-col items-center justify-start pt-[88px]  relative">
 
             <h2 className="font-[Poppins] text-[#BFBFBF] font-semibold text-center text-[32px] mb-10 max-w-[300px]">
-               {`Good to see you 
+                {`Good to see you 
                     again.`}
             </h2>
-            <button className="absolute left-14.5 top-10 z-20 cursor-pointer">
+            <button className="absolute sm:left-3 lg:left-14.5 top-10 z-20 cursor-pointer">
                 <ChevronLeft size={32} />
             </button>
             {/* ✅ STACKED IMAGE SLIDER */}
             <div className="relative w-full h-[270px] overflow-hidden mb-8 flex items-center justify-center">
 
                 {/* Left Arrow */}
-                <button onClick={prevSlide} className="absolute left-10 z-20 cursor-pointer">
+                <button onClick={prevSlide} className="absolute sm:left-3 md:left-3 lg:left-14.5 z-20 cursor-pointer">
                     <ChevronLeft size={32} />
                 </button>
 
@@ -111,10 +111,7 @@ export default function LeftAuthSection() {
                         key={`prev-${prevIndex}`}
                         src={slides[prevIndex].image.src}
                         alt="prev"
-                        className={`absolute w-full h-full object-contain z-0 ${action === "left"
-                                ? "slide-out-right  "// ✅ LEFT → OLD slides right + fades
-                                : "fade-out"        // ✅ RIGHT → OLD only fades
-                            }`}
+                        className={`absolute w-1/2 h-1/2 sm:w-[70%] sm:h-[70%] lg:w-full lg:h-full object-contain z-0 fade-out`}
                     />
                 )}
 
@@ -123,16 +120,16 @@ export default function LeftAuthSection() {
                     key={`current-${index}`}
                     src={slides[index].image.src}
                     alt="current"
-                    className={`absolute w-full h-full object-contain z-10 ${action === "right"
+                    className={`absolute w-1/2 h-1/2 sm:w-[70%] sm:h-[70%] lg:w-full lg:h-full object-contain z-10 ${action === "right"
                             ? "slide-in-right"   // ✅ RIGHT → slides in
                             : action === "left"
                                 ? "fade-in-slow"     // ✅ LEFT → fades in slowly
-                                : ""                 // ✅ default
+                                : "fade-in-slow"                 // ✅ default
                         }`}
                 />
 
                 {/* Right Arrow */}
-                <button onClick={nextSlide} className="absolute right-10 z-20 cursor-pointer">
+                <button onClick={nextSlide} className="absolute sm:right-3 md:right-3 lg:right-13.5 z-20 cursor-pointer">
                     <ChevronRight size={32} />
                 </button>
             </div>
@@ -143,7 +140,7 @@ export default function LeftAuthSection() {
             </h3>
 
             {/* Paragraph */}
-            <p className="font-[Poppins] font-medium text-[17px] leading-[100%] text-center text-white mx-20">
+            <p className="font-[Poppins] font-medium text-[17px] leading-[100%] text-center text-white mx-3 sm:mx-7 md:mx-8 lg:mx-30">
                 {slides[index].paragraph}
             </p>
 
